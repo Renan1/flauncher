@@ -24,6 +24,7 @@ import 'package:drift/drift.dart';
 import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flutter/foundation.dart' hide Category;
+import 'package:flauncher/perfil.dart';
 import 'package:tuple/tuple.dart';
 
 import '../models/app.dart';
@@ -57,6 +58,7 @@ class AppsService extends ChangeNotifier
     await _refreshState(shouldNotifyListeners: false);
     if (_database.wasCreated) {
       await _initDefaultCategories();
+      await _refreshState(shouldNotifyListeners: false);
     }
 
     _fLauncherChannel.addAppsChangedListener((event) async {
@@ -118,11 +120,10 @@ class AppsService extends ChangeNotifier
 
   Future<void> _initDefaultCategories() {
     final tvApplications = _applications.values.where((application) => application.sideloaded == false);
-    final nonTvApplications = _applications.values.where((application) => application.sideloaded == true);
 
     return _database.transaction(() async {
       if (tvApplications.isNotEmpty) {
-        int categoryId = await addCategory("TV Applications",
+        int categoryId = await addCategory("Apps de TV",
             type: CategoryType.grid, shouldNotifyListeners: false
         );
 
@@ -131,13 +132,14 @@ class AppsService extends ChangeNotifier
           await addToCategory(app, tvAppsCategory, shouldNotifyListeners: false);
         }
       }
-      if (nonTvApplications.isNotEmpty) {
-        int categoryId = await addCategory("Non-TV Applications",
-          shouldNotifyListeners: false,
-        );
-        Category nonTvAppsCategory = _categoriesById[categoryId]!;
-        for (final app in nonTvApplications) {
-          await addToCategory(app, nonTvAppsCategory, shouldNotifyListeners: false);
+
+      // Criada por último para ficar no topo (addCategory insere com order 0)
+      final favorites = appsFavoritos.map((packageName) => _applications[packageName]).whereType<App>();
+      if (favorites.isNotEmpty) {
+        int categoryId = await addCategory("Favoritos", shouldNotifyListeners: false);
+        Category favoritesCategory = _categoriesById[categoryId]!;
+        for (final app in favorites) {
+          await addToCategory(app, favoritesCategory, shouldNotifyListeners: false);
         }
       }
     });
