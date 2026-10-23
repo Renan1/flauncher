@@ -113,7 +113,16 @@ class FLauncher extends StatelessWidget {
     const shadows = [Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)];
     final textTheme = Theme.of(context).textTheme;
 
-    return Padding(
+    // Entra com fade e deslizando de baixo para cima ao abrir o launcher
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) => Opacity(
+        opacity: value,
+        child: Transform.translate(offset: Offset(0, 24 * (1 - value)), child: child)
+      ),
+      child: Padding(
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
       // Reconstrói a cada minuto para a saudação acompanhar o horário
       child: StreamBuilder(
@@ -127,7 +136,7 @@ class FLauncher extends StatelessWidget {
           ]
         )
       )
-    );
+    ));
   }
 
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {

@@ -93,12 +93,16 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
         return AspectRatio(
           aspectRatio: 16 / 9,
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.easeInOut,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutBack,
             transformAlignment: Alignment.center,
             transform: _scaleTransform(context),
-            child: Material(
-              borderRadius: BorderRadius.circular(8),
+            // Cards fora de foco ficam translúcidos e deixam o céu aparecer
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              opacity: shouldHighlight ? 1 : 0.78,
+              child: Material(
+              borderRadius: BorderRadius.circular(14),
               clipBehavior: Clip.antiAlias,
               elevation: shouldHighlight ? 16 : 0,
               shadowColor: Colors.black,
@@ -146,7 +150,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                           builder: (context, child) => IgnorePointer(
                             child: Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(14),
                                 border: Border.all(
                                   color: Colors.white.withAlpha(_animation.value.round()),
                                   width: 3
@@ -163,6 +167,7 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
                   ),
                 ],
               ),
+            ),
             ),
           ),
         );
@@ -266,9 +271,9 @@ class _AppCardState extends State<AppCard> with SingleTickerProviderStateMixin {
   }
 
   Matrix4 _scaleTransform(BuildContext context) {
-    double scale = 1.0;
+    double scale = 0.94;
     if (!_moving && _shouldHighlight(context)) {
-      scale = 1.1;
+      scale = 1.12;
     }
     return Matrix4.diagonal3Values(scale, scale, 1.0);
   }
