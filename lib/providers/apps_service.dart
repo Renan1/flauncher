@@ -348,7 +348,14 @@ class AppsService extends ChangeNotifier
 
     try {
       newCategoryId = await _database.transaction(() async {
-        int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(name: categoryName, order: 0));
+        int newCategoryId = await _database.insertCategory(CategoriesCompanion.insert(
+            name: categoryName,
+            order: 0,
+            sort: Value(sort),
+            type: Value(type),
+            columnsCount: Value(columnsCount),
+            rowHeight: Value(rowHeight)
+        ));
         await _database.updateCategories(orderedCategories);
 
         return newCategoryId;
