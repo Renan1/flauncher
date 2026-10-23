@@ -1,13 +1,21 @@
-// Perfil da TV: troque estes valores para gerar o launcher de outra TV.
-const String nome = 'Lara Martins';
-const String subtitulo = 'O que vamos assistir hoje?';
+// Perfis por TV. O perfil é escolhido na compilação: --dart-define=PERFIL=varanda
+// favoritos: apps fixos no topo, nesta ordem. Pacotes não instalados são ignorados.
+const Map<String, ({String nome, List<String> favoritos})> _perfis = {
+  'lara': (
+    nome: 'Lara Martins',
+    favoritos: ['com.google.android.youtube.tv', 'com.netflix.ninja', 'com.disney.disneyplus'],
+  ),
+  'varanda': (
+    nome: 'família Martins',
+    favoritos: [],
+  ),
+};
 
-// Apps fixos no topo, nesta ordem. Pacotes não instalados são ignorados.
-const List<String> appsFavoritos = [
-  'com.google.android.youtube.tv',
-  'com.netflix.ninja',
-  'com.disney.disneyplus',
-];
+const String _perfilAtual = String.fromEnvironment('PERFIL', defaultValue: 'lara');
+
+final String nome = _perfis[_perfilAtual]!.nome;
+final List<String> appsFavoritos = _perfis[_perfilAtual]!.favoritos;
+const String subtitulo = 'O que vamos assistir hoje?';
 
 String saudacao(DateTime agora) {
   final hora = agora.hour;
