@@ -25,6 +25,8 @@ import 'package:flauncher/widgets/apps_grid.dart';
 import 'package:flauncher/widgets/category_row.dart';
 import 'package:flauncher/widgets/launcher_alternative_view.dart';
 import 'package:flauncher/widgets/focus_aware_app_bar.dart';
+import 'package:flauncher/widgets/sky_background.dart';
+import 'package:flauncher/perfil.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -58,7 +60,10 @@ class FLauncher extends StatelessWidget {
               child: Consumer<AppsService>(
                 builder: (context, appsService, _) {
                   if (appsService.initialized) {
-                    return SingleChildScrollView(child: _sections(appsService.launcherSections));
+                    return SingleChildScrollView(child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [_greeting(context), _sections(appsService.launcherSections)]
+                    ));
                   }
                   else {
                     return _emptyState(context);
@@ -104,6 +109,27 @@ class FLauncher extends StatelessWidget {
     }).toList(),
   );
 
+  Widget _greeting(BuildContext context) {
+    const shadows = [Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)];
+    final textTheme = Theme.of(context).textTheme;
+
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      // Reconstrói a cada minuto para a saudação acompanhar o horário
+      child: StreamBuilder(
+        stream: Stream.periodic(const Duration(minutes: 1)),
+        builder: (context, _) => Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(saudacao(DateTime.now()), style: textTheme.displaySmall!.copyWith(color: Colors.white, shadows: shadows)),
+            const SizedBox(height: 4),
+            Text(subtitulo, style: textTheme.titleLarge!.copyWith(color: Colors.white70, shadows: shadows)),
+          ]
+        )
+      )
+    );
+  }
+
   Widget _wallpaper(BuildContext context, WallpaperService wallpaperService) {
     if (wallpaperService.wallpaper != null) {
       final physicalSize = MediaQuery.sizeOf(context);
@@ -116,7 +142,7 @@ class FLauncher extends StatelessWidget {
       );
     }
     else {
-      return Container(key: const Key("background"), decoration: BoxDecoration(gradient: wallpaperService.gradient.gradient));
+      return const SkyBackground(key: Key("background"));
     }
   }
 

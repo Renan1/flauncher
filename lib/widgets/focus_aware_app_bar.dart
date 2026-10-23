@@ -1,4 +1,3 @@
-import 'package:flauncher/perfil.dart';
 import 'package:flauncher/widgets/settings/settings_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -47,13 +46,6 @@ class _FocusAwareAppBarState extends State<FocusAwareAppBar>
         return widget!;
       },
       child: AppBar(
-        title: Text(saudacao,
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            shadows: [
-              const Shadow(color: Colors.black54, offset: Offset(0, 2), blurRadius: 8)
-            ],
-          ),
-        ),
         actions: [
           IconButton(
             padding: const EdgeInsets.all(2),

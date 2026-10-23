@@ -20,6 +20,7 @@ import 'package:flauncher/database.dart';
 import 'package:flauncher/flauncher.dart';
 import 'package:flauncher/flauncher_channel.dart';
 import 'package:flauncher/gradients.dart';
+import 'package:flauncher/widgets/sky_background.dart';
 import 'package:flauncher/providers/apps_service.dart';
 import 'package:flauncher/providers/launcher_state.dart';
 import 'package:flauncher/providers/network_service.dart';
@@ -112,13 +113,13 @@ void main() {
     expect(tester.widget(find.byKey(Key("background"))), isA<Image>());
   });
 
-  testWidgets("Home page displays background gradient", (tester) async {
+  testWidgets("Home page displays sky background", (tester) async {
     final appsService = mkAppService();
     when(appsService.categoriesWithApps).thenReturn([]);
 
     await _pumpWidgetWithProviders(tester, mkWallpaperService(false), appsService, mkSettingsService());
 
-    expect(tester.widget(find.byKey(Key("background"))), isA<Container>());
+    expect(tester.widget(find.byKey(Key("background"))), isA<SkyBackground>());
   });
 
   testWidgets("Pressing select on settings icon opens SettingsPanel", (tester) async {
